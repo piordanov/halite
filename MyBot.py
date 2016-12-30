@@ -2,7 +2,22 @@ from hlt import *
 from networking import *
 
 myID, gameMap = getInit()
-sendInit("MyPythonBot")
+sendInit("piordanov v2")
+
+def chooseMove(piece, location):
+    # patience, young padawan
+    border = False
+    for d in CARDINALS:
+        neighbor = gameMap.getSite(location, d)
+        if neighbor.owner != myID:
+            border = True
+            if neighbor.strength < piece.strength:
+                return Move(location, d)
+
+    if not border and piece.strength < (piece.production * 5):
+        return Move(location, random.choice(DIRECTIONS))
+    else:
+        return Move(location, STILL)
 
 while True:
     moves = []
@@ -12,10 +27,6 @@ while True:
             location = Location(x, y)
             piece = gameMap.getSite(location)
             if piece.owner == myID:
-                move = None
-                if piece.strength == 0:
-                    move = Move(location, STILL)
-                else:
-                    move = Move(location, random.choice(DIRECTIONS))
+                move = chooseMove(piece, location)
                 moves.append(move)
     sendFrame(moves)

@@ -1,0 +1,1 @@
+tensorflow\Scripts\activate.bat
